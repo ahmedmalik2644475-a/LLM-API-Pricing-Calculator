@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM Cost Calculator</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+
+  <div class="llm-calc-container">
+    <h2 class="llm-calc-title">Ultimate Multi-Provider LLM Cost Calculator</h2>
+
+    <div class="llm-calc-group">
+      <label for="modelSelect">Select AI Model &amp; Provider</label>
+      <div class="select-wrap">
+        <select id="modelSelect">
+          <optgroup label="OpenAI (ChatGPT & Reasoning)">
+            <option value="gpt-5-nano">gpt-5-nano ($0.05 In / $0.40 Out)</option>
+            <option value="gpt-4o-mini">GPT-4o mini ($0.15 In / $0.60 Out)</option>
+            <option value="gpt-5.4-mini">GPT-5.4 mini ($0.75 In / $4.50 Out)</option>
+            <option value="o3-mini">o3-mini ($1.10 In / $4.40 Out)</option>
+            <option value="gpt-4o">GPT-4o ($2.50 In / $10.00 Out)</option>
+            <option value="o1">o1 ($15.00 In / $60.00 Out)</option>
+            <option value="gpt-4.5">GPT-4.5 ($75.00 In / $150.00 Out)</option>
+          </optgroup>
+
+          <optgroup label="Google Gemini">
+            <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash-Lite ($0.075 In / $0.30 Out)</option>
+            <option value="gemini-2.0-flash">Gemini 2.0 Flash ($0.10 In / $0.40 Out)</option>
+            <option value="gemini-1.5-pro">Gemini 1.5 Pro ($1.25 In / $5.00 Out)</option>
+            <option value="gemini-2.5-pro">Gemini 2.5 Pro ($1.25 In / $10.00 Out)</option>
+          </optgroup>
+
+          <optgroup label="Anthropic Claude">
+            <option value="claude-3.5-haiku">Claude 3.5 Haiku ($0.80 In / $4.00 Out)</option>
+            <option value="claude-3.5-sonnet">Claude 3.5 Sonnet ($3.00 In / $15.00 Out)</option>
+            <option value="claude-3-opus">Claude 3 Opus ($15.00 In / $75.00 Out)</option>
+          </optgroup>
+
+          <optgroup label="DeepSeek">
+            <option value="deepseek-v3">DeepSeek V3 ($0.14 In / $0.28 Out)</option>
+            <option value="deepseek-r1">DeepSeek R1 ($0.55 In / $2.19 Out)</option>
+          </optgroup>
+
+          <optgroup label="Meta Llama (via Together/Groq)">
+            <option value="llama-3.3-70b">Llama 3.3 70B ($0.59 In / $0.79 Out)</option>
+            <option value="llama-3.1-405b">Llama 3.1 405B ($3.50 In / $3.50 Out)</option>
+          </optgroup>
+
+          <optgroup label="Mistral AI">
+            <option value="mistral-small">Mistral Small ($0.20 In / $0.60 Out)</option>
+            <option value="mistral-large">Mistral Large ($2.00 In / $6.00 Out)</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+
+    <div class="llm-calc-grid">
+      <div class="llm-calc-group">
+        <label for="systemTokens">System Prompt Tokens</label>
+        <input type="number" id="systemTokens" value="200" min="0">
+        <small>~150 words</small>
+      </div>
+
+      <div class="llm-calc-group">
+        <label for="userTokens">User Message Tokens</label>
+        <input type="number" id="userTokens" value="20" min="0">
+        <small>~15 words</small>
+      </div>
+
+      <div class="llm-calc-group">
+        <label for="outputTokens">Output Tokens</label>
+        <input type="number" id="outputTokens" value="15" min="0">
+        <small>JSON / Response size</small>
+      </div>
+
+      <div class="llm-calc-group">
+        <label for="dailyRequests">Daily Requests / Messages</label>
+        <input type="number" id="dailyRequests" value="1000" min="1">
+        <small>Calls per day</small>
+      </div>
+    </div>
+
+    <div class="llm-calc-results">
+      <div class="result-box">
+        <span class="result-label">Cost per Request</span>
+        <span class="result-value" id="costPerRequest">$0.000000</span>
+      </div>
+      <div class="result-box">
+        <span class="result-label">Daily Total</span>
+        <span class="result-value" id="dailyCost">$0.00</span>
+      </div>
+      <div class="result-box highlight">
+        <span class="result-label">Monthly Total (30 Days)</span>
+        <span class="result-value" id="monthlyCost">$0.00</span>
+      </div>
+    </div>
+  </div>
+
+</body>
+<script src="script.js"></script>
+</html>
