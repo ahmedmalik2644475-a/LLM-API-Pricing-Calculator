@@ -3,22 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LLM Cost Calculator</title>
+  <title>LLM API Cost Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
 </head>
 <body>
 
-  <div class="llm-calc-container">
-    <h2 class="llm-calc-title">Ultimate Multi-Provider LLM Cost Calculator</h2>
+  <main class="calc-card">
+    <!-- Header -->
+    <header class="calc-header">
+      <div class="calc-header-top">
+        <h1 class="calc-title">LLM API Pricing Calculator</h1>
+        <span class="version-tag">2026 Rates</span>
+      </div>
+      <p class="calc-desc">Estimate per-request, daily, and monthly API spend across leading models.</p>
+    </header>
 
-    <div class="llm-calc-group">
-      <label for="modelSelect">Select AI Model &amp; Provider</label>
-      <div class="select-wrap">
+    <!-- Quick Scenario Presets -->
+    <div class="scenario-section">
+      <span class="scenario-label">Scenario preset:</span>
+      <div class="scenario-pills">
+        <button type="button" class="scenario-pill active" data-scenario="chat">Customer Chat</button>
+        <button type="button" class="scenario-pill" data-scenario="rag">Document Q&amp;A (RAG)</button>
+        <button type="button" class="scenario-pill" data-scenario="code">Code Review</button>
+        <button type="button" class="scenario-pill" data-scenario="extract">JSON Extraction</button>
+      </div>
+    </div>
+
+    <!-- Model Selector -->
+    <div class="form-row">
+      <label for="modelSelect" class="field-label">Model &amp; Provider</label>
+      <div class="select-wrapper">
         <select id="modelSelect">
-          <optgroup label="OpenAI (ChatGPT & Reasoning)">
+          <optgroup label="OpenAI (ChatGPT &amp; Reasoning)">
             <option value="gpt-5-nano">gpt-5-nano ($0.05 In / $0.40 Out)</option>
-            <option value="gpt-4o-mini">GPT-4o mini ($0.15 In / $0.60 Out)</option>
+            <option value="gpt-4o-mini" selected>GPT-4o mini ($0.15 In / $0.60 Out)</option>
             <option value="gpt-5.4-mini">GPT-5.4 mini ($0.75 In / $4.50 Out)</option>
             <option value="o3-mini">o3-mini ($1.10 In / $4.40 Out)</option>
             <option value="gpt-4o">GPT-4o ($2.50 In / $10.00 Out)</option>
@@ -55,50 +77,116 @@
           </optgroup>
         </select>
       </div>
-    </div>
 
-    <div class="llm-calc-grid">
-      <div class="llm-calc-group">
-        <label for="systemTokens">System Prompt Tokens</label>
-        <input type="number" id="systemTokens" value="200" min="0">
-        <small>~150 words</small>
-      </div>
-
-      <div class="llm-calc-group">
-        <label for="userTokens">User Message Tokens</label>
-        <input type="number" id="userTokens" value="20" min="0">
-        <small>~15 words</small>
-      </div>
-
-      <div class="llm-calc-group">
-        <label for="outputTokens">Output Tokens</label>
-        <input type="number" id="outputTokens" value="15" min="0">
-        <small>JSON / Response size</small>
-      </div>
-
-      <div class="llm-calc-group">
-        <label for="dailyRequests">Daily Requests / Messages</label>
-        <input type="number" id="dailyRequests" value="1000" min="1">
-        <small>Calls per day</small>
+      <!-- Live Rate Info -->
+      <div class="rate-preview" id="ratePreview">
+        <span>Input: <strong id="inputRateVal">$0.15</strong> / 1M</span>
+        <span class="rate-divider">·</span>
+        <span>Output: <strong id="outputRateVal">$0.60</strong> / 1M</span>
       </div>
     </div>
 
-    <div class="llm-calc-results">
-      <div class="result-box">
+    <!-- Inputs Grid -->
+    <div class="inputs-grid">
+      <div class="input-card">
+        <div class="input-header">
+          <label for="systemTokens">System Prompt</label>
+          <span class="unit-tag">tokens</span>
+        </div>
+        <input type="number" id="systemTokens" value="200" min="0" step="10">
+        <span class="input-caption">~150 words instructions / prompt</span>
+      </div>
+
+      <div class="input-card">
+        <div class="input-header">
+          <label for="userTokens">User Input</label>
+          <span class="unit-tag">tokens</span>
+        </div>
+        <input type="number" id="userTokens" value="20" min="0" step="5">
+        <span class="input-caption">~15 words user message</span>
+      </div>
+
+      <div class="input-card">
+        <div class="input-header">
+          <label for="outputTokens">Model Output</label>
+          <span class="unit-tag">tokens</span>
+        </div>
+        <input type="number" id="outputTokens" value="15" min="0" step="5">
+        <span class="input-caption">Completion / response size</span>
+      </div>
+
+      <div class="input-card">
+        <div class="input-header">
+          <label for="dailyRequests">Daily Requests</label>
+          <span class="unit-tag">calls</span>
+        </div>
+        <input type="number" id="dailyRequests" value="1000" min="1" step="100">
+        <div class="quick-chips">
+          <button type="button" class="volume-chip" data-val="500">500</button>
+          <button type="button" class="volume-chip active" data-val="1000">1k</button>
+          <button type="button" class="volume-chip" data-val="5000">5k</button>
+          <button type="button" class="volume-chip" data-val="25000">25k</button>
+          <button type="button" class="volume-chip" data-val="100000">100k</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transparent Math Breakdown Card -->
+    <div class="math-breakdown">
+      <div class="breakdown-title-row">
+        <span class="breakdown-heading">Per-Request Token Breakdown</span>
+        <span class="breakdown-total" id="breakdownTotalDisplay">$0.000042 / call</span>
+      </div>
+      <div class="breakdown-table">
+        <div class="breakdown-item">
+          <span class="item-name">Input (<span id="calcTotalInputTokens">220</span> tokens)</span>
+          <span class="item-formula" id="calcInputFormula">220 × $0.15 / 1M</span>
+          <span class="item-cost" id="calcInputCost">$0.000033</span>
+        </div>
+        <div class="breakdown-item">
+          <span class="item-name">Output (<span id="calcOutputTokens">15</span> tokens)</span>
+          <span class="item-formula" id="calcOutputFormula">15 × $0.60 / 1M</span>
+          <span class="item-cost" id="calcOutputCost">$0.000009</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results KPI Grid -->
+    <div class="results-grid">
+      <div class="result-tile">
         <span class="result-label">Cost per Request</span>
-        <span class="result-value" id="costPerRequest">$0.000000</span>
+        <div class="result-value" id="costPerRequest">$0.000042</div>
+        <span class="result-note">Single API call</span>
       </div>
-      <div class="result-box">
+
+      <div class="result-tile">
         <span class="result-label">Daily Total</span>
-        <span class="result-value" id="dailyCost">$0.00</span>
+        <div class="result-value" id="dailyCost">$0.04</div>
+        <span class="result-note" id="dailyNote">1,000 calls / day</span>
       </div>
-      <div class="result-box highlight">
-        <span class="result-label">Monthly Total (30 Days)</span>
-        <span class="result-value" id="monthlyCost">$0.00</span>
+
+      <div class="result-tile highlight">
+        <div class="highlight-header">
+          <span class="result-label">Monthly Projection</span>
+          <span class="days-badge">30 Days</span>
+        </div>
+        <div class="result-value highlight-num" id="monthlyCost">$1.26</div>
+        <span class="result-note highlight-note">Estimated 30-day bill</span>
       </div>
     </div>
-  </div>
+
+    <!-- Human Toolbar Actions -->
+    <footer class="calc-footer">
+      <button type="button" class="btn btn-secondary" id="copyBtn">
+        <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
+          <path d="M5.5 2A1.5 1.5 0 0 0 4 3.5v7A1.5 1.5 0 0 0 5.5 12h5a1.5 1.5 0 0 0 1.5-1.5v-7A1.5 1.5 0 0 0 10.5 2h-5zm0 1h5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5z"/>
+          <path d="M3 5a1 1 0 0 0-1 1v6.5A1.5 1.5 0 0 0 3.5 14h6a1 1 0 0 0 1-1v-.5H9.5v.5a.5.5 0 0 1-.5.5h-6a.5.5 0 0 1-.5-.5V6h.5V5H3z"/>
+        </svg>
+        <span id="copyBtnText">Copy Estimate</span>
+      </button>
+      <button type="button" class="btn btn-ghost" id="resetBtn">Reset to Defaults</button>
+    </footer>
+  </main>
 
 </body>
-<script src="script.js"></script>
 </html>
